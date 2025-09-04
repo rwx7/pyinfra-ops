@@ -29,3 +29,14 @@ example() (
     cd deploy
     pyinfra inventories/vms.py setup_server.py --limit backup_servers
 )
+
+# Recursively fix file permissions: 644 for files, 655 for .sh/.zsh executables
+fix-perms() {
+    local target_dir="${1:-.}"
+    # Set all dirs to 755
+    find "$target_dir" -type d -exec chmod 755 {} +
+    # Set all files to 644
+    find "$target_dir" -type f -exec chmod 644 {} +
+    # Set .sh and .zsh files that are executable to 755
+    find "$target_dir" \( -name '*.sh' -o -name '*.zsh' \) -type f -exec chmod 755 {} +
+}
