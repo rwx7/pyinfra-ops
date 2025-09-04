@@ -1,0 +1,31 @@
+#!/bin/bash
+set -euo pipefail
+
+# activates pyinfra from local .venv
+[ -d .venv/bin/activate ] && source .venv/bin/activate
+
+# Applies a role ($1=hostname $2=role)
+apply-role() (
+    local hostname="${1}"
+    local task="${2}"
+    # example - apply-role debian-server tasks/lazydocker.py
+    cd deploy
+    cat <<EOF >deploy_role.py
+from pyinfra import local
+local.include("$task")
+EOF
+    if [ "$hostname" == "@local" ] || [ "$hostname" == "localhost" ]; then
+        pyinfra --sudo -y \
+            --data desktop_user=$(whoami) \
+            --data shared_dir=/home/shared \
+            "@local" deploy_role.py
+        return
+    fi
+
+    pyinfra "$hostname" deploy_role.py
+)
+
+example() (
+    cd deploy
+    pyinfra inventories/vms.py setup_server.py --limit backup_servers
+)

@@ -1,0 +1,37 @@
+version: "3"
+
+tasks:
+  deploy-server:
+    desc: Initializes server with docker and SSH keys
+    vars:
+      INVENTORY: 192.168.159.141
+    cmds:
+      - cd deploy && pyinfra {{.INVENTORY}} setup_server.py
+
+  apply-role:
+    desc: Applies a single role, apply-role debian-server tasks/install_lazydocker.py
+    dir: deploy
+    cmds:
+      - |
+        cat <<EOF >deploy_role.py
+        from pyinfra import local
+        local.include("{{ .CLI_ARGS[1] }}")
+        EOF
+      - pyinfra {{ .CLI_ARGS[0] }} deploy_role.py
+
+  pyinfra:
+    desc: Provision server. EG pyinfra -- 192.168.159.141 expose_docker.py
+    cmds:
+      - cd deploy && pyinfra {{.CLI_ARGS}}
+
+  install-venv:
+    desc: Install .venv
+    cmds:
+      - python -m venv .venv
+      - cmd: |
+          pwsh -Command '.venv\Scripts\activate.ps1 && 
+            python -m pip install --upgrade pip &&
+            pip install pyinfra
+          '
+        shell: pwsh
+        platforms: [windows]

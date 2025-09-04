@@ -1,0 +1,33 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a device; this may
+# be used with UUID= as a more robust way to name devices that works even if
+# disks are added and removed. See fstab(5).
+#
+# <file system>             <mount point>  <type>  <options>  <dump>  <pass>
+UUID=F21D-EAF7                            /boot/efi      vfat    fmask=0137,dmask=0027 0 2
+UUID=2aa15459-a699-498e-a613-7967c0796b38 /              ext4    noatime    0 1
+UUID=89e59b9a-1066-459a-a9cc-3c5bdb0b53aa /home          ext4    noatime    0 2
+tmpfs                                     /tmp           tmpfs   defaults,noatime,mode=1777 0 0
+
+# To see UUID: lsblk -f
+# To format as ext4: mkfs -t ext4 /dev/sda2
+
+#### Samsung SSD connected internally
+UUID=cf89d165-07c5-4ae3-8117-cffc67852a5e /media/data ext4  defaults,nofail,noatime,x-systemd.device-timeout=3 0 0
+#### SP SSD connected internally
+#UUID=9163b418-b5ca-4359-b8c6-074df34ea4e8 /media/data ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
+# container images
+UUID=bfd71e41-309d-4038-b3bd-01b18a8df30e /media/images ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
+# share stuff with windows
+UUID=EFFF-3EBA /media/windata exfat  defaults,nofail,x-systemd.device-timeout=3 0 0
+
+
+
+#### External
+UUID=08c33fa4-f937-461e-9e8e-7310b177987f /media/elements_1 ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
+UUID=46b3555b-0a7a-482f-948f-a2e351d645ff /media/elements_2 ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
+
+#### External
+UUID=48a5cd1e-287e-4884-b325-5350277a016b /media/wd14tb_2  ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
+UUID=83fd361e-bbad-41d0-a354-88f4d825f446 /media/wd14tb_3  ext4  defaults,nofail,x-systemd.device-timeout=3 0 0
